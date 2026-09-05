@@ -1,0 +1,17 @@
+.DS_Store
+.env
+/node_modules/
+
+# React Router
+/.react-router/
+/build/
+
+/app/generated/
+
+/.playwright-cli/
+
+# Vendored AI-assistant reference docs — local tooling, not project source
+/.agents/
+/.claude/
+/.windsurf/
+/skills-lock.json

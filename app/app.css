@@ -1,0 +1,250 @@
+@import "tailwindcss";
+@plugin "daisyui" {
+  themes: false;
+  logs: false;
+}
+
+@plugin "daisyui/theme" {
+  name: "saasmarketer";
+  default: true;
+  color-scheme: light;
+
+  --color-base-100: hsl(0 0% 100%);
+  --color-base-200: hsl(280 33% 98%);
+  --color-base-300: hsl(280 20% 93%);
+  --color-base-content: hsl(270 22% 18%);
+
+  --color-primary: #bc2ef0;
+  --color-primary-content: hsl(0 0% 100%);
+
+  --color-secondary: hsl(258 78% 60%);
+  --color-secondary-content: hsl(0 0% 100%);
+
+  --color-accent: hsl(199 88% 48%);
+  --color-accent-content: hsl(0 0% 100%);
+
+  --color-neutral: hsl(270 22% 20%);
+  --color-neutral-content: hsl(280 30% 97%);
+
+  --color-info: hsl(206 85% 48%);
+  --color-info-content: hsl(0 0% 100%);
+  --color-success: hsl(152 62% 36%);
+  --color-success-content: hsl(0 0% 100%);
+  --color-warning: hsl(32 92% 46%);
+  --color-warning-content: hsl(0 0% 100%);
+  --color-error: hsl(354 72% 52%);
+  --color-error-content: hsl(0 0% 100%);
+
+  --radius-selector: 0.6rem;
+  --radius-field: 0.7rem;
+  --radius-box: 1rem;
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+  --border: 1px;
+  --depth: 0;
+  --noise: 0;
+}
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+
+  /* ---- brand: #BC2EF0 = hsl(284 87% 56%) ---- */
+  --color-brand-50: hsl(284 100% 97.5%);
+  --color-brand-100: hsl(284 96% 94%);
+  --color-brand-200: hsl(284 93% 88%);
+  --color-brand-300: hsl(284 90% 78%);
+  --color-brand-400: hsl(284 88% 67%);
+  --color-brand-500: #bc2ef0;
+  --color-brand-600: hsl(284 81% 48%);
+  --color-brand-700: hsl(284 77% 40%);
+  --color-brand-800: hsl(284 71% 32%);
+  --color-brand-900: hsl(284 66% 26%);
+  --color-brand-950: hsl(284 78% 16%);
+
+  /* ---- violet-tinted neutrals, light → dark ---- */
+  --color-ink-50: hsl(285 45% 99%);
+  --color-ink-100: hsl(282 33% 97%);
+  --color-ink-150: hsl(281 26% 95%);
+  --color-ink-200: hsl(280 22% 92%);
+  --color-ink-300: hsl(278 17% 85%);
+  --color-ink-400: hsl(276 12% 68%);
+  --color-ink-500: hsl(274 10% 52%);
+  --color-ink-600: hsl(272 13% 40%);
+  --color-ink-700: hsl(270 17% 29%);
+  --color-ink-800: hsl(270 23% 20%);
+  --color-ink-900: hsl(272 30% 13%);
+  --color-ink-950: hsl(274 40% 8%);
+
+  /* ---- kanban stage accents (tuned for light backgrounds) ---- */
+  --color-stage-idea: hsl(284 78% 56%);
+  --color-stage-film: hsl(205 88% 48%);
+  --color-stage-edit: hsl(32 92% 48%);
+  --color-stage-publish: hsl(152 62% 38%);
+  --color-stage-scheduled: hsl(330 78% 52%);
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --animate-fade-up: fade-up 0.4s var(--ease-out-expo) both;
+  --animate-fade-in: fade-in 0.25s ease both;
+  --animate-slide-in: slide-in 0.32s var(--ease-out-expo) both;
+  --animate-shimmer: shimmer 1.6s linear infinite;
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes shimmer {
+  from { background-position: 180% 0; }
+  to { background-position: -80% 0; }
+}
+@keyframes slide-in {
+  from { opacity: 0; transform: translateX(14px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+
+html, body {
+  background-color: var(--color-ink-50);
+  color: var(--color-ink-700);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+body { min-height: 100dvh; }
+
+/* soft brand wash behind the app shell */
+.app-aurora::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(58rem 38rem at 12% -14%, hsl(284 90% 62% / 0.10), transparent 62%),
+    radial-gradient(44rem 34rem at 106% -4%, hsl(258 88% 62% / 0.08), transparent 58%),
+    radial-gradient(48rem 38rem at 52% 116%, hsl(300 85% 58% / 0.06), transparent 62%);
+}
+
+::selection { background: hsl(284 87% 56% / 0.2); }
+
+* { scrollbar-width: thin; scrollbar-color: var(--color-ink-300) transparent; }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: var(--color-ink-300);
+  border-radius: 999px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+::-webkit-scrollbar-thumb:hover { background: var(--color-ink-400); background-clip: content-box; }
+
+@utility glass {
+  background: hsl(0 0% 100% / 0.78);
+  backdrop-filter: blur(14px);
+  border: 1px solid var(--color-ink-200);
+  box-shadow: 0 1px 2px hsl(274 40% 8% / 0.04), 0 12px 32px -16px hsl(274 40% 8% / 0.14);
+}
+
+@utility surface {
+  background-color: var(--color-base-100);
+  border: 1px solid var(--color-ink-200);
+  box-shadow: 0 1px 2px hsl(274 40% 8% / 0.04);
+}
+
+/* runs across text while the AI is rewriting it */
+@utility shimmer-text {
+  background-image: linear-gradient(
+    100deg,
+    var(--color-ink-300) 25%,
+    var(--color-brand-500) 42%,
+    var(--color-brand-300) 52%,
+    var(--color-ink-300) 68%
+  );
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: var(--animate-shimmer);
+}
+
+@utility brand-gradient {
+  background-image: linear-gradient(135deg, var(--color-brand-400), var(--color-brand-600));
+}
+
+@utility text-gradient {
+  background-image: linear-gradient(120deg, var(--color-brand-600), var(--color-brand-500) 45%, hsl(258 78% 58%));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* markdown script rendering */
+.prose-script { @apply text-[15px] leading-7 text-ink-700; }
+.prose-script h1 { @apply text-2xl font-semibold text-ink-900 mt-6 mb-3 first:mt-0; }
+.prose-script h2 { @apply text-xl font-semibold text-ink-900 mt-6 mb-2.5 first:mt-0; }
+.prose-script h3 { @apply text-sm font-semibold text-brand-700 mt-5 mb-2 uppercase tracking-wider; }
+.prose-script p { @apply my-3; }
+.prose-script ul { @apply my-3 list-disc pl-5 space-y-1.5 marker:text-brand-500; }
+.prose-script ol { @apply my-3 list-decimal pl-5 space-y-1.5 marker:text-brand-500; }
+.prose-script strong { @apply font-semibold text-ink-900; }
+.prose-script em { @apply italic text-ink-600; }
+.prose-script blockquote { @apply border-l-2 border-brand-400 pl-4 my-4 text-ink-600 italic; }
+.prose-script code { @apply rounded bg-brand-50 px-1.5 py-0.5 text-[13px] text-brand-700; }
+.prose-script pre { @apply my-4 overflow-x-auto rounded-xl bg-ink-100 p-4 text-[13px]; }
+.prose-script pre code { @apply bg-transparent p-0 text-ink-800; }
+.prose-script hr { @apply my-6 border-ink-200; }
+.prose-script a { @apply text-brand-600 underline underline-offset-2 hover:text-brand-700; }
+.prose-script table { @apply my-4 w-full text-sm; }
+.prose-script th { @apply border-b border-ink-200 px-2 py-1.5 text-left font-semibold text-ink-900; }
+.prose-script td { @apply border-b border-ink-150 px-2 py-1.5; }
+
+/* reading mode: headings scale with the chosen body size */
+.prose-teleprompter h1,
+.prose-teleprompter h2 {
+  font-size: 0.62em;
+  margin-top: 1.6em;
+  margin-bottom: 0.5em;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-brand-600);
+}
+.prose-teleprompter h3 { font-size: 0.55em; }
+.prose-teleprompter p,
+.prose-teleprompter li { font-size: inherit; }
+.prose-teleprompter ul,
+.prose-teleprompter ol { padding-left: 1.1em; }
+
+/* a light sweeps down the script while the AI rewrites it */
+.script-generating {
+  position: relative;
+  overflow: hidden;
+}
+.script-generating > * {
+  opacity: 0.55;
+}
+.script-generating::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  height: 42%;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    hsl(284 87% 56% / 0.05) 30%,
+    hsl(284 87% 56% / 0.16) 55%,
+    hsl(284 87% 56% / 0.05) 75%,
+    transparent
+  );
+  animation: sweep-down 1.9s ease-in-out infinite;
+}
+
+@keyframes sweep-down {
+  0% { transform: translateY(-110%); }
+  100% { transform: translateY(300%); }
+}

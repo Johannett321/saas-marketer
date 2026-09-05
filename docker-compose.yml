@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: saas-marketer-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: saasmarketer
+      POSTGRES_PASSWORD: saasmarketer
+      POSTGRES_DB: saas_marketer
+    ports:
+      - "5433:5432"
+    volumes:
+      - saas-marketer-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U saasmarketer -d saas_marketer"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  saas-marketer-pgdata:
