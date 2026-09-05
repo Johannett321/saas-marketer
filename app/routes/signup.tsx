@@ -75,7 +75,7 @@ export default function Signup({ actionData }: Route.ComponentProps) {
             <Logo />
           </Link>
           <h1 className="mt-10 text-3xl font-semibold tracking-tight text-ink-900">Create your account</h1>
-          <p className="mt-2 text-ink-500">Set up your workspace in under a minute.</p>
+          <p className="mt-2 text-ink-500">Next you name a board, then the AI fills it. Under a minute.</p>
 
           <Form method="post" className="mt-8 space-y-4" replace>
             <div>
@@ -142,7 +142,7 @@ export default function Signup({ actionData }: Route.ComponentProps) {
         </div>
       </div>
 
-      <AuthAside />
+      <AuthAside showSteps />
     </div>
   );
 }

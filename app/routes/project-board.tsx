@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Outlet, data, useFetcher, useParams } from "react-router";
 import { DndProvider, useDrop } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import { Plus, Sparkles, X } from "lucide-react";
+import { Link2, Newspaper, PenLine, Plus, Shuffle, Sparkles, X } from "lucide-react";
 import type { Route } from "./+types/project-board";
 import { db } from "~/lib/db.server";
 import { requireUser } from "~/lib/session.server";
@@ -19,6 +19,7 @@ import {
   type DragItem,
 } from "~/components/board-card";
 import { IdeaGenerator } from "~/components/idea-generator";
+import { AiKeyNotice, useHasAiKey } from "~/components/ai-key-notice";
 import { RouteErrorPanel } from "~/components/route-error";
 
 export const meta = ({ loaderData }: Route.MetaArgs) => [
@@ -152,7 +153,8 @@ export default function ProjectBoard({ loaderData }: Route.ComponentProps) {
   const { workspace, project, cards, members } = loaderData;
   const params = useParams();
   const fetcher = useFetcher();
-  const [generatorOpen, setGeneratorOpen] = useState(false);
+  // `null` means closed; a mode means open and preset to that source.
+  const [generator, setGenerator] = useState<GeneratorMode | null>(null);
   // Which column has its composer open. The board owns this so the header's
   // "New idea" can open the Idea column's composer from outside the column.
   const [composing, setComposing] = useState<CardStatus | null>(null);
@@ -223,13 +225,20 @@ export default function ProjectBoard({ loaderData }: Route.ComponentProps) {
             <button
               type="button"
               className="btn btn-primary btn-sm gap-1.5"
-              onClick={() => setGeneratorOpen(true)}
+              onClick={() => setGenerator("RANDOM")}
             >
               <Sparkles className="size-4" /> Generate ideas
             </button>
           </div>
         </header>
 
+        {cards.length === 0 && composing === null ? (
+          <EmptyBoard
+            niche={project.niche}
+            onGenerate={setGenerator}
+            onWriteOwn={() => setComposing("IDEA")}
+          />
+        ) : (
         <div className="min-h-0 flex-1 overflow-x-auto">
           <div className="flex h-full min-w-max gap-4 p-5">
             {columns.map(({ stage, cards: columnCards }) => (
@@ -247,19 +256,143 @@ export default function ProjectBoard({ loaderData }: Route.ComponentProps) {
             ))}
           </div>
         </div>
+        )}
       </div>
 
       <Outlet />
 
-      {generatorOpen && (
+      {generator && (
         <IdeaGenerator
           projectId={project.id}
           workspaceSlug={workspace.slug}
           niche={project.niche}
-          onClose={() => setGeneratorOpen(false)}
+          initialMode={generator}
+          onClose={() => setGenerator(null)}
         />
       )}
     </DndProvider>
+  );
+}
+
+type GeneratorMode = "RANDOM" | "NEWS" | "URL";
+
+const SOURCES: Array<{
+  id: GeneratorMode;
+  label: string;
+  body: (niche: string | null) => string;
+  icon: typeof Shuffle;
+}> = [
+  {
+    id: "NEWS",
+    label: "Today's news",
+    body: (niche) =>
+      niche
+        ? `Five angles off what happened today in ${niche}.`
+        : "Five angles off what happened in your field today.",
+    icon: Newspaper,
+  },
+  {
+    id: "URL",
+    label: "From a page",
+    body: () => "Paste an article. The AI reads it and pitches five takes.",
+    icon: Link2,
+  },
+  {
+    id: "RANDOM",
+    label: "From scratch",
+    body: () => "No source, no link — just five titles to react to.",
+    icon: Shuffle,
+  },
+];
+
+/**
+ * What a brand new board shows instead of five identical dashed hints.
+ *
+ * An empty board is the moment the app is least convincing, so this offers the
+ * three ways to fill it as one click each — and, when the key is missing, the
+ * field to add it, rather than sending someone to the profile page and hoping
+ * they find their way back.
+ */
+function EmptyBoard({
+  niche,
+  onGenerate,
+  onWriteOwn,
+}: {
+  niche: string | null;
+  onGenerate: (mode: GeneratorMode) => void;
+  onWriteOwn: () => void;
+}) {
+  const hasAiKey = useHasAiKey();
+
+  return (
+    <div className="min-h-0 flex-1 overflow-y-auto px-5 py-10">
+      <div className="mx-auto w-full max-w-2xl animate-fade-up">
+        <div className="text-center">
+          <span className="mx-auto grid size-12 place-items-center rounded-2xl bg-brand-50 text-brand-600">
+            <Sparkles className="size-6" />
+          </span>
+          <h2 className="mt-4 text-xl font-semibold text-ink-900">
+            Your board is empty. Fill it in one click.
+          </h2>
+          <p className="mx-auto mt-2 max-w-md text-sm text-ink-500">
+            Pick where the first ideas come from. Each one arrives as a card with its angle and
+            its source attached, ready for a script.
+          </p>
+        </div>
+
+        {!hasAiKey && (
+          <div className="mt-6">
+            <AiKeyNotice action="Idea generation" />
+          </div>
+        )}
+
+        <div className="mt-6 grid gap-3 sm:grid-cols-3">
+          {SOURCES.map(({ id, label, body, icon: Icon }) => (
+            <button
+              key={id}
+              type="button"
+              onClick={() => onGenerate(id)}
+              className="group rounded-box border border-ink-200 bg-base-100 p-4 text-left transition-colors hover:border-brand-300 hover:bg-brand-50/60"
+            >
+              <span className="grid size-8 place-items-center rounded-xl bg-brand-50 text-brand-600 transition-colors group-hover:bg-brand-100">
+                <Icon className="size-4" />
+              </span>
+              <p className="mt-3 text-[13.5px] font-medium text-ink-900">{label}</p>
+              <p className="mt-1 text-[12.5px] leading-relaxed text-ink-500">{body(niche)}</p>
+            </button>
+          ))}
+        </div>
+
+        <div className="mt-4 text-center">
+          <button
+            type="button"
+            onClick={onWriteOwn}
+            className="btn btn-ghost btn-sm gap-1.5 text-ink-500 hover:text-brand-600"
+          >
+            <PenLine className="size-3.5" /> Or write the first title yourself
+          </button>
+        </div>
+
+        <div className="mt-10 rounded-box border border-ink-200 bg-base-200/50 p-4">
+          <p className="text-[12px] font-semibold tracking-wider text-ink-400 uppercase">
+            Where cards go from here
+          </p>
+          <div className="mt-3 grid grid-cols-5 gap-2">
+            {STAGES.map((stage) => (
+              <div key={stage.id}>
+                <div className="flex items-center gap-1.5">
+                  <span className={`size-1.5 shrink-0 rounded-full ${stage.dot}`} />
+                  <span className="truncate text-[11px] font-medium text-ink-600">
+                    {stage.short}
+                  </span>
+                </div>
+                <div className="mt-1.5 h-1 rounded-full bg-ink-200" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 

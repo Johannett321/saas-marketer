@@ -29,6 +29,8 @@ import { useConfirm } from "~/components/confirm";
 import { WaitingGame } from "~/components/waiting-game";
 import { ScriptEditor } from "~/components/script-editor";
 import { RouteErrorPanel, WidgetBoundary } from "~/components/route-error";
+import { AiKeyNotice } from "~/components/ai-key-notice";
+import { MISSING_KEY_MESSAGE } from "~/lib/ai";
 import { Teleprompter } from "~/components/teleprompter";
 import { AssigneePicker, StatusPicker } from "~/components/pickers";
 import type { TitleOption } from "~/lib/ai.server";
@@ -376,11 +378,18 @@ export default function CardDetail({ loaderData, params }: Route.ComponentProps)
               </div>
             )}
 
-            {scriptError && (
-              <div className="mb-3 rounded-box border border-error/30 bg-error/5 px-4 py-3 text-[13px] text-error">
-                {scriptError}
-              </div>
-            )}
+            {scriptError &&
+              (scriptError === MISSING_KEY_MESSAGE ? (
+                // A missing key is not an error the person made — it is a setup
+                // step, so offer the field rather than a red box.
+                <div className="mb-3">
+                  <AiKeyNotice action="Script writing" />
+                </div>
+              ) : (
+                <div className="mb-3 rounded-box border border-error/30 bg-error/5 px-4 py-3 text-[13px] text-error">
+                  {scriptError}
+                </div>
+              ))}
 
             {improveOpen && !busy && (
               <div className="mb-3 rounded-box border border-brand-200 bg-brand-50/50 p-3">

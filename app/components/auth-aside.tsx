@@ -1,7 +1,14 @@
-import { STAGES } from "~/lib/stages";
+import { BoardPreview } from "./board-preview";
 
-/** Decorative half of the auth screens — a stylised board on the brand aurora. */
-export function AuthAside() {
+/**
+ * The right half of the auth screens: what the account is for, and — on signup —
+ * how short the path to a filled board is. Nothing is ticked here: the account
+ * does not exist yet, and a head start has to correspond to something the person
+ * actually did or it gets found out on the very next screen.
+ */
+const STEPS = ["Create your account", "Name your board", "Generate your first ideas"];
+
+export function AuthAside({ showSteps = false }: { showSteps?: boolean }) {
   return (
     <aside className="relative hidden overflow-hidden border-l border-ink-200 lg:block">
       <div className="absolute inset-0 bg-gradient-to-br from-brand-100/70 via-transparent to-secondary/8" />
@@ -14,30 +21,26 @@ export function AuthAside() {
         </blockquote>
 
         <div className="glass rounded-box p-4">
-          <div className="grid grid-cols-5 gap-2.5">
-            {STAGES.map((stage, i) => (
-              <div key={stage.id}>
-                <div className="mb-2 flex items-center gap-1.5">
-                  <span className={`size-1.5 rounded-full ${stage.dot}`} />
-                  <span className="truncate text-[10px] text-ink-500">{stage.short}</span>
-                </div>
-                <div className="space-y-1.5">
-                  {Array.from({ length: [3, 2, 1, 2, 1][i] }).map((_, j) => (
-                    <div
-                      key={j}
-                      className="rounded-lg border border-ink-200 bg-ink-100 p-2"
-                      style={{ animation: `fade-up .5s ${i * 60 + j * 90}ms both` }}
-                    >
-                      <div className={`h-1 w-6 rounded-full bg-gradient-to-r ${stage.bar}`} />
-                      <div className="mt-1.5 h-1 w-full rounded-full bg-ink-150" />
-                      <div className="mt-1 h-1 w-2/3 rounded-full bg-ink-150" />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
+          <BoardPreview dense />
         </div>
+
+        {showSteps && (
+          <div>
+            <p className="text-[12px] font-semibold tracking-wider text-ink-400 uppercase">
+              Three steps to a full board
+            </p>
+            <ol className="mt-3 flex flex-col gap-2.5">
+              {STEPS.map((label, i) => (
+                <li key={label} className="flex items-center gap-2.5 text-[13px]">
+                  <span className="grid size-5 shrink-0 place-items-center rounded-full border border-ink-300 bg-base-100 text-[10px] font-semibold text-ink-500">
+                    {i + 1}
+                  </span>
+                  <span className="text-ink-600">{label}</span>
+                </li>
+              ))}
+            </ol>
+          </div>
+        )}
       </div>
     </aside>
   );

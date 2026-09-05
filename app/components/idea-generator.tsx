@@ -48,11 +48,14 @@ export function IdeaGenerator({
   projectId,
   workspaceSlug,
   niche,
+  initialMode = "RANDOM",
   onClose,
 }: {
   projectId: string;
   workspaceSlug: string;
   niche: string | null;
+  /** Set when the modal is opened from a surface that already picked a source. */
+  initialMode?: Mode;
   onClose: () => void;
 }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -61,7 +64,7 @@ export function IdeaGenerator({
   const revalidator = useRevalidator();
   const hasAiKey = useHasAiKey();
 
-  const [mode, setMode] = useState<Mode>("RANDOM");
+  const [mode, setMode] = useState<Mode>(initialMode);
   const [count, setCount] = useState(5);
   const [url, setUrl] = useState("");
   const [accepted, setAccepted] = useState<Set<string>>(new Set());

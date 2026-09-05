@@ -31,6 +31,7 @@ export default [
 
   // resource routes for the long-running AI calls
   route("avatar/:userId", "routes/avatar.tsx"),
+  route("api/ai-key", "routes/api.ai-key.tsx"),
   route("api/game", "routes/api.game.tsx"),
   route("api/ideas", "routes/api.ideas.tsx"),
   route("api/project-profile", "routes/api.project-profile.tsx"),
